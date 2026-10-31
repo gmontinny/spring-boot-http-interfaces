@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-products" author="gmontinny">
+        <createTable tableName="products">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brand" type="VARCHAR(200)"/>
+            <column name="description" type="TEXT"/>
+            <column name="initial_price" type="NUMERIC(15,2)"/>
+            <column name="final_price" type="NUMERIC(15,2)"/>
+            <column name="currency" type="VARCHAR(10)"/>
+            <column name="availability" type="VARCHAR(100)"/>
+            <column name="rating" type="NUMERIC(3,1)"/>
+            <column name="reviews_count" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="source" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="VARCHAR(200)"/>
+            <column name="image_url" type="TEXT"/>
+            <column name="product_url" type="TEXT"/>
+            <column name="seller_name" type="VARCHAR(200)"/>
+            <column name="categories" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="products" indexName="idx_products_source">
+            <column name="source"/>
+        </createIndex>
+        <createIndex tableName="products" indexName="idx_products_brand">
+            <column name="brand"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-create-addresses" author="gmontinny">
+        <createTable tableName="addresses">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cep" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="logradouro" type="VARCHAR(200)"/>
+            <column name="complemento" type="VARCHAR(200)"/>
+            <column name="unidade" type="VARCHAR(100)"/>
+            <column name="bairro" type="VARCHAR(100)"/>
+            <column name="localidade" type="VARCHAR(100)"/>
+            <column name="uf" type="VARCHAR(2)"/>
+            <column name="estado" type="VARCHAR(50)"/>
+            <column name="regiao" type="VARCHAR(50)"/>
+            <column name="ibge" type="VARCHAR(20)"/>
+            <column name="gia" type="VARCHAR(20)"/>
+            <column name="ddd" type="VARCHAR(5)"/>
+            <column name="siafi" type="VARCHAR(20)"/>
+            <column name="fetched_via" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="addresses" indexName="idx_addresses_cep">
+            <column name="cep"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
