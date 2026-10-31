@@ -132,6 +132,18 @@ http://localhost:8080/swagger-ui.html
 
 ## Endpoints
 
+### Credenciais padrão
+
+A migration `001` cria automaticamente um usuário admin na primeira inicialização:
+
+| Campo | Valor |
+|---|---|
+| `username` | `admin` |
+| `password` | `Admin@2026` |
+| `roles` | `ROLE_ADMIN`, `ROLE_USER` |
+
+> Em produção, altere a senha imediatamente via `PUT /api/v1/users/{id}` após o primeiro login.
+
 ### Autenticação — `/api/v1/auth`
 
 | Método | Rota | Descrição |

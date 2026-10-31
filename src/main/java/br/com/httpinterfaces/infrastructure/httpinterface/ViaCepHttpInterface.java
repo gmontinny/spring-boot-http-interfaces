@@ -1,6 +1,7 @@
 package br.com.httpinterfaces.infrastructure.httpinterface;
 
 import br.com.httpinterfaces.application.dto.ViaCepResponse;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
@@ -20,5 +21,5 @@ import org.springframework.web.service.annotation.HttpExchange;
 public interface ViaCepHttpInterface {
 
     @GetExchange("/{cep}/json/")
-    ViaCepResponse findByCep(String cep);
+    ViaCepResponse findByCep(@PathVariable String cep);
 }
