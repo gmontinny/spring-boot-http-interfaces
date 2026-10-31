@@ -9,5 +9,6 @@
     <include file="classpath:db/changelog/002-create-products.xml"/>
     <include file="classpath:db/changelog/003-create-addresses.xml"/>
     <include file="classpath:db/changelog/004-alter-products-rating.xml"/>
+    <include file="classpath:db/changelog/005-grant-admin-to-gmontinny.xml"/>
 
 </databaseChangeLog>

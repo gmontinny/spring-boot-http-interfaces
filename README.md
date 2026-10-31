@@ -290,6 +290,7 @@ Migrações gerenciadas pelo **Liquibase** em `src/main/resources/db/changelog/`
 | `002-create-products.xml` | Cria `products` |
 | `003-create-addresses.xml` | Cria `addresses` |
 | `004-alter-products-rating.xml` | Altera `rating` de `NUMERIC(3,1)` → `NUMERIC(4,2)` |
+| `005-grant-admin-to-gmontinny.xml` | Concede `ROLE_ADMIN` ao usuário `gmontinny` |
 
 ---
 
@@ -437,6 +438,41 @@ ClassNotFoundException: org.springframework.boot.autoconfigure.web.servlet.WebMv
 **Solução:** Atualizar para `springdoc-openapi-starter-webmvc-ui:3.1.0`, que é compatível com Spring Boot 4.
 
 **Lição:** Springdoc 2.x é compatível apenas com Spring Boot 2.x/3.x. Para Spring Boot 4, usar `3.1.0+`.
+
+---
+
+### Erro 8 — 403 Forbidden após login com usuário existente
+
+**Sintoma:**
+```
+HTTP 403 Forbidden em GET /api/v1/users com token JWT válido
+```
+
+**Causa:** O endpoint `/auth/register` sempre atribui `ROLE_USER` — nunca `ROLE_ADMIN`. O usuário `gmontinny` foi criado via `/register` e tinha apenas `ROLE_USER`. O JWT é stateless: as authorities são carregadas do banco no momento do login, então um token gerado antes da promoção não reflete a nova role.
+
+**Solução errada (evitar):** Executar SQL diretamente no banco (`INSERT INTO user_roles ...`). Bypassa o versionamento e não é rastreável.
+
+**Solução correta:** Migration Liquibase `005-grant-admin-to-gmontinny.xml` com `preConditions onFail="MARK_RAN"` — executada automaticamente na próxima inicialização:
+
+```xml
+<changeSet id="005-grant-admin-to-gmontinny" author="gmontinny">
+    <preConditions onFail="MARK_RAN">
+        <sqlCheck expectedResult="1">
+            SELECT COUNT(*) FROM users WHERE username = 'gmontinny'
+        </sqlCheck>
+    </preConditions>
+    <sql>
+        INSERT INTO user_roles (user_id, role_id)
+        SELECT u.id, r.id FROM users u, roles r
+        WHERE u.username = 'gmontinny' AND r.name = 'ROLE_ADMIN'
+        ON CONFLICT DO NOTHING
+    </sql>
+</changeSet>
+```
+
+Após reiniciar a aplicação, fazer login novamente para obter um token com `ROLE_ADMIN` nas authorities.
+
+**Lição:** Alterações de dados de segurança (roles, permissões) devem sempre ser versionadas via Liquibase. SQL direto no banco não é rastreável, não é reproduzível em outros ambientes e quebra o histórico de migrações.
 
 ---
 
